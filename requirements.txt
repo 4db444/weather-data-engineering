@@ -1,3 +1,7 @@
 numpy
 pandas
+pandas-stubs
 dotenv
+requests
+mypy
+python-dotenv
