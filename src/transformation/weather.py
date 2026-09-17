@@ -2,7 +2,7 @@ from pandas import Index, DataFrame
 from os import environ, makedirs
 from json import load
 
-def transform_weather (df_index : Index) -> None:
+def transform_weather (df_index : Index) -> DataFrame:
     weather_list = []
     for index in df_index:
         with open(f"{environ["BRONZE_PATH"]}/weather/{index}.json", "r", encoding="utf-8") as file:
@@ -34,3 +34,6 @@ def transform_weather (df_index : Index) -> None:
 
     makedirs(f"{environ["SILVER_PATH"]}/weather", exist_ok=True)
     df.to_csv(f"{environ["SILVER_PATH"]}/weather/cleaned.csv", index=False)
+    df.to_csv(f"{environ["SILVER_PATH"]}/weather/cleaned.csv", index=False)
+
+    return df.set_index(["city", "date"])

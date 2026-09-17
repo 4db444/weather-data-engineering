@@ -3,7 +3,7 @@ from pandas import DataFrame
 from json import dump
 from os import environ, makedirs
 
-def get_weather(df : DataFrame) -> None:
+def get_weather(df : DataFrame) -> DataFrame:
     try:
         url = environ["API_URL"]
 
@@ -22,5 +22,7 @@ def get_weather(df : DataFrame) -> None:
 
     except Exception as e:
         print(e)
+
+    return df.set_index("city")
 
 

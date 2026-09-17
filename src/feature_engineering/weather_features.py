@@ -18,7 +18,7 @@ def _calculate_risk_score(row: Series) -> int:
 
     return score
 
-def _add_risk_score(df : DataFrame) -> None:
+def _add_risk_score(df : DataFrame) -> DataFrame:
 
     df["risk_score"] = df.apply(
         _calculate_risk_score,
@@ -26,10 +26,14 @@ def _add_risk_score(df : DataFrame) -> None:
     )
     df["avg_temp"] = (df["min_temp"] + df["max_temp"]) / 2
 
-def _add_avg_temp(df : DataFrame) -> None:
+    return df
+
+def _add_avg_temp(df : DataFrame) -> DataFrame:
     df["avg_temp"] = (df["min_temp"] + df["max_temp"]) / 2
 
-def _add_temp_category(df : DataFrame) -> None:
+    return df
+
+def _add_temp_category(df : DataFrame) -> DataFrame:
     df["temp_category"] = cut(
         df["avg_temp"],
         bins=[-float("inf"), 0, 10, 18, 25, 30, 35, 40, float("inf")],
@@ -45,7 +49,9 @@ def _add_temp_category(df : DataFrame) -> None:
         ]
     )
 
-def _add_precipitation_category(df : DataFrame) -> None:
+    return df
+
+def _add_precipitation_category(df : DataFrame) -> DataFrame:
     df["precipitation_category"] = cut(
         df["sum_precipitation"],
         bins=[-float("inf"), 0.1, 5, 10, 25, 50, 100, float("inf")],
@@ -60,7 +66,9 @@ def _add_precipitation_category(df : DataFrame) -> None:
         ]
     )
 
-def _add_wind_category(df : DataFrame) -> None:
+    return df
+
+def _add_wind_category(df : DataFrame) -> DataFrame:
     df["wind_category"] = cut(
         df["max_wind_speed"],
         bins=[-float("inf"), 5, 15, 25, 40, 55, 75, float("inf")],
@@ -74,10 +82,11 @@ def _add_wind_category(df : DataFrame) -> None:
             "Extreme"
         ]
     )
+    return df
 
 
 # The fucntion that inserts all the features at ones:
-def add_features(df : DataFrame) -> None:
+def add_features(df : DataFrame) -> DataFrame:
     _add_risk_score(df)
     _add_avg_temp(df)
     _add_temp_category(df)
@@ -86,3 +95,5 @@ def add_features(df : DataFrame) -> None:
 
     makedirs(f"{environ["GOLD_PATH"]}/weather", exist_ok=True)
     df.to_csv(f"{environ["GOLD_PATH"]}/weather/gold.csv")
+
+    return df
