@@ -5,3 +5,7 @@ dotenv
 requests
 mypy
 python-dotenv
+sqlalchemy
+sqlalchemy_utils
+types-sqlalchemy-utils
+psycopg2-binary
