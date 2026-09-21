@@ -1,0 +1,45 @@
+services:
+  etl:
+    build: .
+    depends_on:
+      - postgres
+      - airflow
+    environment:
+      API_URL: https://api.open-meteo.com/v1/forecast?daily=temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_gusts_10m_max,weather_code,precipitation_probability_max,precipitation_sum&timezone=auto&forecast_days=3
+
+      BRONZE_PATH: data/bronze
+      SILVER_PATH: data/silver
+      GOLD_PATH: data/gold
+
+      DB_DRIVER: postgresql
+      DB_USER: postgres
+      DB_HOST: postgres
+      DB_NAME: weather
+      DB_PASSWORD: Brahim444
+      DB_PORT: 5432
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Brahim444
+      POSTGRES_DB: weather
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  airflow:
+    image: apache/airflow:3.0.6
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:Brahim444@postgres:5432/weather
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    command: airflow standalone
+
+volumes:
+  postgres_data:
